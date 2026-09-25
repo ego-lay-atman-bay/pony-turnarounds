@@ -414,6 +414,7 @@ dependencies = [
     { name = "bpy" },
     { name = "discord-py" },
     { name = "luna-kit", extra = ["rk", "xml"] },
+    { name = "pillow" },
 ]
 
 [package.metadata]
@@ -421,6 +422,7 @@ requires-dist = [
     { name = "bpy", specifier = ">=5.1" },
     { name = "discord-py", specifier = ">=2.7.1" },
     { name = "luna-kit", extras = ["rk", "xml"], git = "https://github.com/ego-lay-atman-bay/luna-kit/" },
+    { name = "pillow", specifier = ">=12.3.0" },
 ]
 
 [[package]]
