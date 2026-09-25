@@ -20,6 +20,7 @@ class PonyRenderer:
     input: Path
     output: Path
     bot: DiscordBot
+    n_frames: int
 
     rk: RKModel
 
@@ -34,12 +35,14 @@ class PonyRenderer:
         input: Path,
         output: Path,
         bot: DiscordBot,
+        n_frames: int = 100,
     ) -> None:
         self.pony = pony
         self.name = name
         self.input = input
         self.output = output
         self.bot = bot
+        self.n_frames = n_frames
 
         self.rk = RKModel(input)
         self.frames = []
@@ -60,7 +63,7 @@ class PonyRenderer:
     def load(self):
         cleanup_scene()
         scene: bpy.types.Scene = bpy.context.scene
-        scene.frame_end = 2
+        scene.frame_end = self.n_frames
 
 
         bpy.ops.import_scene.rk_data( # type: ignore

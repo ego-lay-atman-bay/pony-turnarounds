@@ -24,6 +24,14 @@ def main() -> None:
         nargs = '+',
     )
 
+    argparser.add_argument(
+        '-f', '--frames',
+        dest = 'frames',
+        default = 100,
+        type = int,
+        help = 'Number of frames for the animation',
+    )
+
     args = argparser.parse_args()
 
     renderer = BatchRenderer(
@@ -31,6 +39,7 @@ def main() -> None:
         game_folder = args.game_folder,
         output = args.output_folder,
         discord_post = False,
+        n_frames = args.frames,
     )
     renderer.start()
 

@@ -16,6 +16,7 @@ class BatchRenderer:
     game_object_data: GameObjectData
     loc: LOC
     discord_post: bool
+    n_frames: int
     
     
     def __init__(
@@ -24,11 +25,13 @@ class BatchRenderer:
         game_folder: str,
         output: str,
         discord_post: bool = False,
+        n_frames: int = 100,
     ) -> None:
         self.ponies = list(ponies)
         self.game_folder = Path(game_folder)
         self.output_folder = Path(output)
         self.discord_post = discord_post
+        self.n_frames = n_frames
 
         if self.output_folder.is_file():
             raise NotADirectoryError(f'Output folder must be directory {self.output_folder}')
@@ -78,6 +81,7 @@ class BatchRenderer:
             input = input,
             output = output,
             bot = self.bot,
+            n_frames = self.n_frames,
         )
 
         pony_renderer.start()
