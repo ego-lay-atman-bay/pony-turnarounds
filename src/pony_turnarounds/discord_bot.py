@@ -1,0 +1,2 @@
+class DiscordBot:
+    pass

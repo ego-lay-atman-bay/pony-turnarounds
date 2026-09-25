@@ -243,6 +243,15 @@ wheels = [
 ]
 
 [[package]]
+name = "fake-bpy-module"
+version = "20260924"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/6c/58b8dcb8e644907efb1b82a8978900783e5740c4d71bd782f967d6dd906e/fake_bpy_module-20260924.tar.gz", hash = "sha256:fcc8c14c6899ce42d3f3254b590cc58a68ed239d5e1ad3de869fad1f2b68fffb", size = 968182, upload-time = "2026-09-24T10:44:08.727Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/23/5e/dae48c929edf1e155de4046487e6eef92fa4ad7805981d8dc9d1e9dd5dc0/fake_bpy_module-20260924-py3-none-any.whl", hash = "sha256:9b9c4ce6b76c9656bd8ce27e83b2a7cd913cf30372ef4b91d97815f43559df9d", size = 1116240, upload-time = "2026-09-24T10:44:07.093Z" },
+]
+
+[[package]]
 name = "frozenlist"
 version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -417,6 +426,11 @@ dependencies = [
     { name = "pillow" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "fake-bpy-module" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "bpy", specifier = ">=5.1" },
@@ -424,6 +438,9 @@ requires-dist = [
     { name = "luna-kit", extras = ["rk", "xml"], git = "https://github.com/ego-lay-atman-bay/luna-kit/" },
     { name = "pillow", specifier = ">=12.3.0" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "fake-bpy-module", specifier = ">=20260924" }]
 
 [[package]]
 name = "propcache"
