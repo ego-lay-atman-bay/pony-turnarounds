@@ -177,6 +177,7 @@ class PonyRenderer:
         for material in self.rk.materials:
             image = material.properties.image()
             if not image or not image.has_transparency_data:
+                logging.debug('Has no alpha')
                 continue
             hist = image.getchannel("A").histogram()
             if any(count > 0 for count in hist[3:254]):
