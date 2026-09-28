@@ -59,7 +59,6 @@ class BatchRenderer:
         if self.config.discord.token:
             try:
                 self.bot = DiscordBot(self.config.discord.token)
-                self.bot.start()
             except:
                 logging.exception('Cannot log into discord')
                 self.bot = None
@@ -71,18 +70,35 @@ class BatchRenderer:
         if not self.ponies:
             print('No ponies to render, quitting')
             return
-        
-        init_blend(self.config)
 
-        failed: list[str] = []
-
-        for pony_id in self.ponies:
-            if not self.render_pony(pony_id):
-                failed.append(pony_id)
+        if self.bot:
+            try:
+                self.bot.start()
+            except:
+                logging.exception("Couldn't start discord bot")
+                self.bot = None
         
-        print('Done!')
-        if failed:
-            print(f"failed: {', '.join(failed)}")
+
+        try:
+            
+            init_blend(self.config)
+
+            failed: list[str] = []
+
+            for pony_id in self.ponies:
+                if not self.render_pony(pony_id):
+                    failed.append(pony_id)
+            
+            print('Done!')
+            if failed:
+                print(f"failed: {', '.join(failed)}")
+        
+        finally:
+            self.cleanup()
+        
+    def cleanup(self):
+        if self.bot and self.bot:
+            self.bot.stop()
         
     
     def render_pony(self, pony_id: str):

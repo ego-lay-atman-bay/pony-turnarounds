@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+import logging
 
 from .batch_renderer import BatchRenderer
 
@@ -35,10 +36,12 @@ def main() -> None:
 
     args = argparser.parse_args()
 
+    logging.basicConfig(level = logging.INFO)
+
     renderer = BatchRenderer(
         ponies = args.ponies,
         game_folder = args.game_folder,
-        output = args.output_folder,
+        output = args.output,
         discord_post = not args.no_discord_post,
         config_path = 'config.yaml',
     )
