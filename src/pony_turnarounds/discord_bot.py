@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Sequence
 import logging
 from pathlib import Path
 import threading
@@ -6,8 +7,10 @@ from typing import Literal, Optional, TypeAlias
 
 import discord
 
+from .typings import RenderEngine
 
-RenderEngine: TypeAlias = Literal['BLENDER_EEVEE', 'CYCLES']
+
+
 
 USER = 673981139995852830
 
@@ -129,7 +132,7 @@ class DiscordBot:
         self,
         message: str,
         channels: int | list[int],
-        files: list[str | Path] | None = None,
+        files: Sequence[str | Path] | None = None,
     ):
         channel_ids = [channels] if isinstance(channels, int) else channels
         return self._run_coroutine(
@@ -140,7 +143,7 @@ class DiscordBot:
         self,
         message: str,
         channel_ids: list[int],
-        file_paths: list[str | Path] | None,
+        file_paths: Sequence[str | Path] | None,
     ):
         return await asyncio.gather(
             *(
@@ -153,11 +156,11 @@ class DiscordBot:
         self,
         channel_id: int,
         message: str,
-        file_paths: list[str | Path] | None,
+        file_paths: Sequence[str | Path] | None,
     ):
         channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
         files = [discord.File(path) for path in file_paths] if file_paths else []
-        return await channel.send(message, files=files)
+        return await channel.send(message, files=files) # type: ignore
     
     def ask_render_engine(
         self,
@@ -189,7 +192,7 @@ class DiscordBot:
             user = user,
         )
 
-        message = await channel.send(
+        message = await channel.send( # type: ignore
             content = "Which engine to use?",
             file = discord.File(preview),
             view = view,

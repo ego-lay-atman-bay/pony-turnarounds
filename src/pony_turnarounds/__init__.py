@@ -9,13 +9,16 @@ def main() -> None:
     argparser = ArgumentParser()
 
     argparser.add_argument(
-        'game_folder',
+        '-g', '--game-folder',
+        dest = 'game_folder',
         help = 'Game folder',
+        required = True,
     )
 
     argparser.add_argument(
-        'output_folder',
-        help = 'Output folder',
+        '-o', '--output',
+        dest = 'output',
+        help = 'Output folder, can be set in config.yaml',
     )
 
     argparser.add_argument(
@@ -25,11 +28,9 @@ def main() -> None:
     )
 
     argparser.add_argument(
-        '-f', '--frames',
-        dest = 'frames',
-        default = 100,
-        type = int,
-        help = 'Number of frames for the animation',
+        '--no-discord-post',
+        action = 'store_true',
+        dest = 'no_discord_post',
     )
 
     args = argparser.parse_args()
@@ -38,8 +39,8 @@ def main() -> None:
         ponies = args.ponies,
         game_folder = args.game_folder,
         output = args.output_folder,
-        discord_post = False,
-        n_frames = args.frames,
+        discord_post = not args.no_discord_post,
+        config_path = 'config.yaml',
     )
     renderer.start()
 

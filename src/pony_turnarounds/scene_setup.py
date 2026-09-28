@@ -1,15 +1,17 @@
 import bpy
 
-from .utils import enable_addon_deps
+from .config import Config
+from .utils import enable_addon_deps, blender_fps
 
-def init_blend():
+
+def init_blend(config: Config):
     bpy.ops.wm.read_homefile(use_empty = True)
     failed = enable_addon_deps()
     if failed:
         raise ValueError(f'Missing addons: {", ".join(failed)}')
-    setup_scene()
+    setup_scene(config)
 
-def setup_scene():
+def setup_scene(config: Config):
     """
     Sets up the scene for rendering turnarounds.
     """
@@ -26,11 +28,11 @@ def setup_scene():
     
     bpy.ops.rk.setup_renderer() # type: ignore
     scene.frame_start = 1
-    scene.frame_end = 100
-    scene.render.fps = 10
-    scene.render.resolution_x = 720
-    scene.render.resolution_y = 540
-    scene.render.film_transparent = True
+    scene.frame_end = config.render.frames
+    scene.render.fps, scene.render.fps_base = blender_fps(config.render.fps)
+    scene.render.resolution_x = config.render.resolution.width
+    scene.render.resolution_y = config.render.resolution.height
+    scene.render.film_transparent = config.render.transparent
     
 
 def cleanup_scene():

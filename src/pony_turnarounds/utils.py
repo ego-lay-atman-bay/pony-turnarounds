@@ -1,7 +1,12 @@
+from fractions import Fraction
+from pathlib import Path
+import subprocess
+import sys
 from typing import Any
 
-import bpy
 import addon_utils
+import bpy
+
 
 ADDON_DEPS = ['rk_importer']
 
@@ -32,3 +37,33 @@ def enable_addon_deps():
             failed.append(addon)
     
     return failed
+
+def open_file(filepath: str | Path):
+    image_viewer = {'linux':'xdg-open',
+                    'win32':'explorer',
+                    'darwin':'open'}[sys.platform]
+    subprocess.Popen([image_viewer, filepath])
+
+
+def blender_fps(target: float) -> tuple[int, float]:
+    """
+    Convert fps to blender fps/base_fps
+
+    Args:
+        target (float): Input fps
+
+    Returns:
+        tuple[int, float]: (fps, base_fps)
+    """
+
+    # NTSC-style rates (23.976, 29.97, 59.94, ...) are N / 1.001
+    n = round(target * 1.001)
+    if abs(n / 1.001 - target) < 0.001:
+        return n, 1.001
+
+    # Everything else: convert to a simple fraction.
+    # str() avoids float noise (59.5 -> "59.5", not 59.5000000001)
+    frac = Fraction(str(target)).limit_denominator(1000)
+    return frac.numerator, float(frac.denominator)
+
+

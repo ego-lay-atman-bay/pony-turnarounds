@@ -1,17 +1,19 @@
+import logging
+import os
+from pathlib import Path
 import time
 from typing import Literal
-from pathlib import Path
-import os
+
 from PIL import Image
-
 import bpy
-
 from luna_kit.gameobjectdata import GameObjectData
 from luna_kit.model.rk import RKModel
 
+from .config import Config
 from .discord_bot import DiscordBot
 from .scene_setup import cleanup_scene
-from .utils import check_addon
+from .typings import RenderEngine
+from .utils import check_addon, open_file
 
 
 class PonyRenderer:
@@ -19,8 +21,8 @@ class PonyRenderer:
     name: str
     input: Path
     output: Path
-    bot: DiscordBot
-    n_frames: int
+    config: Config
+    bot: DiscordBot | None = None
 
     rk: RKModel
 
@@ -34,15 +36,15 @@ class PonyRenderer:
         name: str,
         input: Path,
         output: Path,
-        bot: DiscordBot,
-        n_frames: int = 100,
+        config: Config,
+        bot: DiscordBot | None = None,
     ) -> None:
         self.pony = pony
         self.name = name
         self.input = input
         self.output = output
         self.bot = bot
-        self.n_frames = n_frames
+        self.config = config
 
         self.rk = RKModel(input)
         self.frames = []
@@ -63,7 +65,7 @@ class PonyRenderer:
     def load(self):
         cleanup_scene()
         scene: bpy.types.Scene = bpy.context.scene
-        scene.frame_end = self.n_frames
+        scene.frame_end = self.config.render.frames
 
 
         bpy.ops.import_scene.rk_data( # type: ignore
@@ -72,9 +74,9 @@ class PonyRenderer:
             eyes_state = 'OPEN',
         )
         bpy.ops.rk.add_turnaround_driver() # type: ignore
-        bpy.ops.rk.fit_camera(margin = 0.5) # type: ignore
+        bpy.ops.rk.fit_camera(margin = self.config.render.camera_margin) # type: ignore
         if bpy.ops.rk.set_uv_scroll_frames.poll(): # type: ignore
-            bpy.ops.rk.set_uv_scroll_frames(cycles = 2) # type: ignore
+            bpy.ops.rk.set_uv_scroll_frames(cycles = self.config.render.scrolling_texture_cycles) # type: ignore
 
     
     def render_turnaround(self):
@@ -138,9 +140,37 @@ class PonyRenderer:
         
     
     def _cycles_review(self):
-        print('Ask for render')
+        logging.info('Asking for render engine')
+
         scene: bpy.types.Scene = bpy.context.scene
-        scene.render.engine = 'BLENDER_EEVEE'
+        scene.render.engine = 'CYCLES'  # type: ignore[reportAttributeAccessIssue]
+        review_path = Path(bpy.app.tempdir)/f'{self.pony}_review.png'
+        scene.render.filepath = str(review_path)
+        scene.render.image_settings.media_type = 'IMAGE'
+        scene.render.image_settings.file_format = 'PNG'
+        scene.render.image_settings.color_mode = 'RGBA'
+        scene.render.use_render_cache = False
+        scene.render.use_overwrite = True
+
+        scene.frame_set(self.config.render.review_frame)
+
+        bpy.ops.render.render(write_still = True)
+
+        engine: RenderEngine = 'CYCLES'
+
+        if self.bot and self.config.discord.review_channel and self.config.discord.approver_user:
+            reviewed_engine = self.bot.ask_render_engine(
+                review_path,
+                self.config.discord.review_channel,
+                self.config.discord.approver_user,
+            )
+
+            engine = reviewed_engine if reviewed_engine else 'CYCLES'
+        else:
+            open_file(review_path)
+            engine = 'CYCLES' if input("Use CYCLES (Y/n)? ").lower() not in ['n', 'no', 'f', 'false'] else 'BLENDER_EEVEE'
+        
+        scene.render.engine = engine # type: ignore[reportAttributeAccessIssue]
         self.render_turnaround()
 
     def has_translucency(self):
@@ -149,7 +179,7 @@ class PonyRenderer:
             if not image or not image.has_transparency_data:
                 continue
             hist = image.getchannel("A").histogram()
-            if any(count > 50 for count in hist[25:240]):
+            if any(count > 0 for count in hist[3:254]):
                 return True
         
         return False
