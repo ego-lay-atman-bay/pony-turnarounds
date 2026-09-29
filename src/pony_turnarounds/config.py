@@ -27,7 +27,6 @@ class WikiConfig(BaseModel):
     url: str = ''
     username: str = ''
     password: str = ''
-    chunk_size: int = 0
 
 class Config(BaseModel):
     render: RenderConfig

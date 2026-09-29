@@ -386,6 +386,18 @@ wheels = [
 ]
 
 [[package]]
+name = "mwclient"
+version = "0.11.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests-oauthlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/b3/0f77b8838a22e99b9cb64aef15fb96a4a8315fe890dbe3bff6f8364e8940/mwclient-0.11.0.tar.gz", hash = "sha256:2bb7696f3703243eb33514ab162d7f6076dcedd011be90682936046c5e34fd06", size = 71978, upload-time = "2024-08-12T09:08:14.235Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b0/ad/2bf4551a9f9c5c360b990ce6119edd717e0f28bb332a71921f4aa52889dc/mwclient-0.11.0-py3-none-any.whl", hash = "sha256:27914a307cb4539fd49a16d634c9c777c0de0976b3af9225bd95d4657bfd4d74", size = 33274, upload-time = "2024-08-12T09:08:13Z" },
+]
+
+[[package]]
 name = "numpy"
 version = "2.5.3"
 source = { registry = "https://pypi.org/simple" }
@@ -402,6 +414,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/41/ee/38e785e88a4045f6ad1d1f2808dcdfafdca48c760260c0587bf171e29fc9/numpy-2.5.3-cp313-cp313-win32.whl", hash = "sha256:1c80eabb4035ecf4ca9cd49cde8a9fdd69a729e63e6474887d1523ade7aa277f", size = 6129003, upload-time = "2026-09-06T16:25:23.664Z" },
     { url = "https://files.pythonhosted.org/packages/f3/ec/100f2b1794ede74a9b3d7ec6b9736927f56713414c1dfe19ab6c383494bf/numpy-2.5.3-cp313-cp313-win_amd64.whl", hash = "sha256:71cad2b2a7451ab79d8f5e71b453485b6775963d5cf794179144a7463fe6e8ec", size = 12560965, upload-time = "2026-09-06T16:25:26.602Z" },
     { url = "https://files.pythonhosted.org/packages/80/b1/7dc825ca94c12acebbce4c37caa5e198695eb31424bc579679f32b1bb49d/numpy-2.5.3-cp313-cp313-win_arm64.whl", hash = "sha256:8e4dd766076855b5ff7ea52fa5f07ce26286726e0f8bff446b7739d02e6ea204", size = 10482343, upload-time = "2026-09-06T16:25:29.772Z" },
+]
+
+[[package]]
+name = "oauthlib"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/d8/a1bcc8ba112a627f8ffbdc212a78ce18d3ac07e91a5ca65d27918eee25a1/oauthlib-4.0.0.tar.gz", hash = "sha256:efb274799819440f95b4ab3b818869f1ce9ae26c5beacba0201d1a1b76b54f86", size = 187232, upload-time = "2026-09-28T06:01:18.77Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d9/f4/78229a1066068ca14fc60fb26cf7381cabe4382261392b90e5f9552722d4/oauthlib-4.0.0-py3-none-any.whl", hash = "sha256:624c28c13a0a59cabf9747dfa52af63be3e512a7f2714df16e91b5b3a145e6cd", size = 159715, upload-time = "2026-09-28T06:01:17.008Z" },
 ]
 
 [[package]]
@@ -432,9 +453,11 @@ dependencies = [
     { name = "bpy" },
     { name = "discord-py" },
     { name = "luna-kit", extra = ["rk", "xml"] },
+    { name = "mwclient" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pyyaml" },
+    { name = "requests" },
 ]
 
 [package.dev-dependencies]
@@ -447,9 +470,11 @@ requires-dist = [
     { name = "bpy", specifier = ">=5.1" },
     { name = "discord-py", specifier = ">=2.7.1" },
     { name = "luna-kit", extras = ["rk", "xml"], git = "https://github.com/ego-lay-atman-bay/luna-kit/" },
+    { name = "mwclient", specifier = ">=0.11.0" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pydantic", specifier = ">=2.13.5" },
     { name = "pyyaml", specifier = ">=6.0.3" },
+    { name = "requests", specifier = ">=2.34.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -553,6 +578,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz", hash = "sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed", size = 142856, upload-time = "2026-05-14T19:25:27.735Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl", hash = "sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0", size = 73075, upload-time = "2026-05-14T19:25:26.443Z" },
+]
+
+[[package]]
+name = "requests-oauthlib"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "oauthlib" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9", size = 55650, upload-time = "2024-03-22T20:32:29.939Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36", size = 24179, upload-time = "2024-03-22T20:32:28.055Z" },
 ]
 
 [[package]]
