@@ -15,6 +15,7 @@ from .crop import crop_image
 from .discord_bot import DiscordBot
 from .pony_renderer import PonyRenderer
 from .scene_setup import init_blend
+from .wiki_bot import WikiBot
 
 
 class BatchRenderer:
@@ -24,10 +25,12 @@ class BatchRenderer:
     game_object_data: GameObjectData
     loc: LOC
     discord_post: bool
+    wiki_upload: bool
 
     config: Config
 
-    bot: DiscordBot | None = None
+    discord_bot: DiscordBot | None = None
+    wiki_bot: WikiBot | None = None
     
     
     def __init__(
@@ -36,11 +39,13 @@ class BatchRenderer:
         game_folder: str | Path,
         output: str | Path | None = None,
         discord_post: bool = False,
+        wiki_upload: bool = False,
         config_path: str | Path = 'config.yaml',
     ) -> None:
         self.ponies = list(ponies)
         self.game_folder = Path(game_folder)
         self.discord_post = discord_post
+        self.wiki_upload = wiki_upload
         self.config = load_config(config_path)
 
         if output:
@@ -58,12 +63,21 @@ class BatchRenderer:
 
         if self.config.discord.token:
             try:
-                self.bot = DiscordBot(self.config.discord.token)
+                self.discord_bot = DiscordBot(self.config.discord.token)
             except:
                 logging.exception('Cannot log into discord')
-                self.bot = None
+                self.discord_bot = None
         else:
-            self.bot = None
+            self.discord_bot = None
+        
+        if self.config.wiki.url and self.config.wiki.username and self.config.wiki.password:
+            try:
+                self.wiki_bot = WikiBot(self.config)
+            except:
+                logging.exception("Cannot log into wiki")
+                self.wiki_bot = None
+        else:
+            self.wiki_bot = None
             
 
     def start(self):
@@ -71,12 +85,12 @@ class BatchRenderer:
             print('No ponies to render, quitting')
             return
 
-        if self.bot:
+        if self.discord_bot:
             try:
-                self.bot.start()
+                self.discord_bot.start()
             except:
                 logging.exception("Couldn't start discord bot")
-                self.bot = None
+                self.discord_bot = None
         
 
         try:
@@ -97,8 +111,8 @@ class BatchRenderer:
             self.cleanup()
         
     def cleanup(self):
-        if self.bot and self.bot:
-            self.bot.stop()
+        if self.discord_bot and self.discord_bot:
+            self.discord_bot.stop()
         
     
     def render_pony(self, pony_id: str):
@@ -125,7 +139,7 @@ class BatchRenderer:
             input = input,
             output = output,
             config = self.config,
-            bot = self.bot,
+            bot = self.discord_bot,
         )
 
         pony_renderer.start()
@@ -146,10 +160,10 @@ class BatchRenderer:
                 images.append(portrait_output)
 
 
-            if self.discord_post and self.bot and self.config.discord.output_channels:
+            if self.discord_post and self.discord_bot and self.config.discord.output_channels:
                 logging.info('Sending to discord')
                 
-                self.bot.send_message(
+                self.discord_bot.send_message(
                     dedent(f"""\
                     ## [{name}](<https://all-the-ponies.com/pony/{pony_id}/>)
                     > {description}
@@ -157,6 +171,14 @@ class BatchRenderer:
                     self.config.discord.output_channels,
                     files = images,
                 )
+            
+            if self.wiki_upload and self.wiki_bot:
+                logging.info("Uploading turnaround to wiki")
+                self.wiki_bot.upload_file(f"{name} turnaround.webp", output)
+                logging.info("Uploading 2d to wiki")
+                self.wiki_bot.upload_file(f"{name} 2d.png", full_2d_output)
+                logging.info("Uploading portrait to wiki")
+                self.wiki_bot.upload_file(f"{name} portrait.png", portrait_output)
         else:
             logging.error(f'Failed to render {pony_id}')
             return False

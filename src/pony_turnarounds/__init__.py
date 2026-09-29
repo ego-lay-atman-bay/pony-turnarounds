@@ -34,6 +34,12 @@ def main() -> None:
         dest = 'no_discord_post',
     )
 
+    argparser.add_argument(
+        '--no-wiki-upload',
+        action = 'store_true',
+        dest = 'no_wiki_upload',
+    )
+
     args = argparser.parse_args()
 
     logging.basicConfig(level = logging.INFO)
@@ -43,6 +49,7 @@ def main() -> None:
         game_folder = args.game_folder,
         output = args.output,
         discord_post = not args.no_discord_post,
+        wiki_upload = not args.no_wiki_upload,
         config_path = 'config.yaml',
     )
     renderer.start()

@@ -4,7 +4,6 @@ import urllib.parse
 from luna_kit.file_utils import PathOrBinaryFile, open_binary
 import mwclient
 import mwclient.image
-import requests
 
 from .config import Config
 
