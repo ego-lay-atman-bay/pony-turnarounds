@@ -133,8 +133,8 @@ class BatchRenderer:
         if output.is_file():
             logging.info('Render finished')
 
-            full_2d_output = self.output_folder/pony_id/f'{pony_id}_2d.webp'
-            portrait_output = self.output_folder/pony_id/f'{pony_id}_portrait.webp'
+            full_2d_output = self.output_folder/pony_id/f'{pony_id}_2d.png'
+            portrait_output = self.output_folder/pony_id/f'{pony_id}_portrait.png'
 
             self.crop_game_image(pony_obj.get('Icon', {}).get('Url', ''), full_2d_output)
             self.crop_game_image(pony_obj.get('Shop', {}).get('Icon', ''), portrait_output)
