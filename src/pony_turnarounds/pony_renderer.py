@@ -142,34 +142,37 @@ class PonyRenderer:
     def _cycles_review(self):
         logging.info('Asking for render engine')
 
-        scene: bpy.types.Scene = bpy.context.scene
-        scene.render.engine = 'CYCLES'  # type: ignore[reportAttributeAccessIssue]
-        review_path = Path(bpy.app.tempdir)/f'{self.pony}_review.png'
-        scene.render.filepath = str(review_path)
-        scene.render.image_settings.media_type = 'IMAGE'
-        scene.render.image_settings.file_format = 'PNG'
-        scene.render.image_settings.color_mode = 'RGBA'
-        scene.render.use_render_cache = False
-        scene.render.use_overwrite = True
+        engine = self.config.render.translucent_engine
 
-        scene.frame_set(self.config.render.review_frame)
+        if self.config.render.ask_review:
+            scene: bpy.types.Scene = bpy.context.scene
+            scene.render.engine = 'CYCLES'  # type: ignore[reportAttributeAccessIssue]
+            review_path = Path(bpy.app.tempdir)/f'{self.pony}_review.png'
+            scene.render.filepath = str(review_path)
+            scene.render.image_settings.media_type = 'IMAGE'
+            scene.render.image_settings.file_format = 'PNG'
+            scene.render.image_settings.color_mode = 'RGBA'
+            scene.render.use_render_cache = False
+            scene.render.use_overwrite = True
 
-        bpy.ops.render.render(write_still = True)
+            scene.frame_set(self.config.render.review_frame)
 
-        engine: RenderEngine = 'CYCLES'
+            bpy.ops.render.render(write_still = True)
 
-        if self.bot and self.config.discord.review_channel and self.config.discord.approver_user:
-            reviewed_engine = self.bot.ask_render_engine(
-                review_path,
-                self.config.discord.review_channel,
-                self.config.discord.approver_user,
-                timeout = self.config.discord.preview_timeout or 30,
-            )
+            engine: RenderEngine = 'CYCLES'
 
-            engine = reviewed_engine if reviewed_engine else 'CYCLES'
-        else:
-            open_file(review_path)
-            engine = 'CYCLES' if input("Use CYCLES (Y/n)? ").lower() not in ['n', 'no', 'f', 'false'] else 'BLENDER_EEVEE'
+            if self.bot and self.config.discord.review_channel and self.config.discord.approver_user:
+                reviewed_engine = self.bot.ask_render_engine(
+                    review_path,
+                    self.config.discord.review_channel,
+                    self.config.discord.approver_user,
+                    timeout = self.config.discord.preview_timeout or 30,
+                )
+
+                engine = reviewed_engine if reviewed_engine else 'CYCLES'
+            else:
+                open_file(review_path)
+                engine = 'CYCLES' if input("Use CYCLES (Y/n)? ").lower() not in ['n', 'no', 'f', 'false'] else 'BLENDER_EEVEE'
         
         scene.render.engine = engine # type: ignore[reportAttributeAccessIssue]
         self.render_turnaround()

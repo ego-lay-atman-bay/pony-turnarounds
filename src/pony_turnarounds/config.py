@@ -3,6 +3,8 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 import yaml
 
+from .typings import RenderEngine
+
 class ResolutionConfig(BaseModel):
     width: int = 720
     height: int = 540
@@ -13,6 +15,8 @@ class RenderConfig(BaseModel):
     frames: int = 100
     scrolling_texture_cycles: float = 2
     camera_margin: float = 0.5
+    ask_review: bool = False
+    translucent_engine: RenderEngine = 'CYCLES'
     review_frame: int = 25
     resolution: ResolutionConfig = Field(default_factory = ResolutionConfig)
     transparent: bool = True
