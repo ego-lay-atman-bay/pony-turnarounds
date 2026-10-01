@@ -82,6 +82,9 @@ def main() -> None:
         
         ponies = list(set(ponies))
 
+        if not ponies:
+            raise ValueError('No ponies to render')
+
 
         renderer = BatchRenderer(
             ponies = ponies,
