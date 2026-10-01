@@ -163,6 +163,7 @@ class PonyRenderer:
                 review_path,
                 self.config.discord.review_channel,
                 self.config.discord.approver_user,
+                timeout = self.config.discord.preview_timeout or 30,
             )
 
             engine = reviewed_engine if reviewed_engine else 'CYCLES'

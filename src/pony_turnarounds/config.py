@@ -22,6 +22,7 @@ class DiscordConfig(BaseModel):
     review_channel: int | None = None
     approver_user: int | None = None
     output_channels: list[int] = Field(default_factory = list)
+    preview_timeout: int = 30
 
 class WikiConfig(BaseModel):
     url: str = ''
