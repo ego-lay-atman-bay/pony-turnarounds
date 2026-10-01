@@ -1,0 +1,27 @@
+render:
+  output: "renders/"           # folder to where final renders are saved
+  fps: 10
+  frames: 100                  # total frames in the turnaround animation
+  scrolling_texture_cycles: 2  # number of cycles to repeat with models with scrolling textures (e.g. Celestia and Luna)
+  camera_margin: 0.5           # extra space between camera and model
+  ask_review: true             # whether to ask which engine to render translucent models with
+  translucent_engine: "CYCLES" # The engine to render translucent ponies with, can be "CYCLES" or "BLENDER_EEVEE"
+  review_frame: 25             # frame to render and send for review
+  resolution:
+    width: 720
+    height: 540
+  transparent: true
+
+discord: # Optional
+  token: "DISCORD_BOT_TOKEN"
+  review_channel: 123456789   # channel where the Cycles preview + engine buttons get posted
+  approver_user: 123456789    # only this user's button presses count
+  output_channels:            # list of channels where finished renders get posted
+    - 123456789
+    - 123456789
+  preview_timeout: 60
+ 
+wiki: # Optional
+  url: "https://mlp-game-wiki.no/w/api.php" # link to wiki api.php
+  username: "Username@Bot"                  # bot username / password created from Special:BotPasswords
+  password: "BOT_PASSWORD"
